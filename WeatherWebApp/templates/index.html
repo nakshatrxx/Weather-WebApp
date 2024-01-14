@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Weather WebApp</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>    
+    <div class="container">
+        <br><br><br>
+        <div class="row"><h2>Weather WebApp using Flask in Python</h2></div>
+        <br>
+        <div class="row">           
+            <p>Get weather details of any city around the world.</p>           
+        </div>
+        <div class="row">                        
+            {% block content %}                                    
+                <form action="{{ url_for("index") }}" method="post">
+                    <div class="form-group">
+                        <label for="cityName">City Name:</label>
+                        <input type="text" id="cityName" name="cityName" value="{{ cityName }}" placeholder="City Name" required>
+                        <button>Find</button>
+                        {% if error %}
+                            <br><br><span class="Error">Error: Please enter a valid city name.</span></br>
+                        {% endif %}
+                    </div>                
+                </form>
+            {% endblock %}
+            
+            {% if data %}
+                {% if 'main' in data %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>City Name</th>
+                                <th>Country Code</th>
+                                <th>Coordinate</th>
+                                <th>Temperature</th>
+                                <th>Pressure</th>
+                                <th>Humidity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ city_name }}</td>
+                                <td>{{ data.sys.country if 'sys' in data else 'N/A' }}</td>
+                                <td>{{ data.coord.lon if 'coord' in data else 'N/A' }} {{ data.coord.lat if 'coord' in data else 'N/A' }}</td>
+                                <td>{{ data.main.temp if 'main' in data else 'N/A' }} K / {{ '%.2f' | format(data.main.temp - 273.15) if 'main' in data else 'N/A' }} °C</td>
+                                <td>{{ data.main.pressure if 'main' in data else 'N/A' }}</td>
+                                <td>{{ data.main.humidity if 'main' in data else 'N/A' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="Error">Error: Unable to retrieve weather data for the specified city.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
